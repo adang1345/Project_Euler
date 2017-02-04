@@ -58,4 +58,3 @@ for key in keys:
         break
 
 print(ascii_sum(decrypted_message))
-print("a")
