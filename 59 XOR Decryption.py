@@ -25,12 +25,14 @@ def ascii_to_text(l):
         text_list.append(str(chr(x)))
     return "".join(text_list)
 
+
 def ascii_decrypt(l, key):
     """for list of ascii codes l, decrypt codes by XOR with list of ascii key of length 3"""
     decrypted_ascii = []
     for x in range(len(l)):
         decrypted_ascii.append(l[x] ^ key[x % 3])
     return decrypted_ascii
+
 
 def ascii_sum(s):
     """return sum of ascii values for characters in string s"""
