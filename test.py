@@ -1,1 +1,3 @@
-print(tuple("hello"))
+from math import log10
+
+print(log10(653594771241830065359477124183*17))
