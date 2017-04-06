@@ -1,6 +1,7 @@
-"""https://projecteuler.net/problem=101"""
+"""https://projecteuler.net/problem=101
 
-"""Using Vandermonde matrices, I generated the 10 optimal polynomials."""
+Using Vandermonde matrices, I generated the 10 optimal polynomials."""
+
 
 import numpy
 

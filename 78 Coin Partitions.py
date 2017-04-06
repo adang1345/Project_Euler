@@ -1,13 +1,15 @@
-"""It is possible to write five as a sum in exactly six different ways:
+"""Let p(n) represent the number of different ways in which n coins can be separated into piles. For example, five coins
+can be separated into piles in exactly seven different ways, so p(5)=7.
 
-4 + 1
-3 + 2
-3 + 1 + 1
-2 + 2 + 1
-2 + 1 + 1 + 1
-1 + 1 + 1 + 1 + 1
+OOOOO
+OOOO   O
+OOO   OO
+OOO   O   O
+OO   OO   O
+OO   O   O   O
+O   O   O   O   O
 
-How many different ways can one hundred be written as a sum of at least two positive integers?"""
+Find the least value of n for which p(n) is divisible by one million."""
 
 import functools
 
@@ -35,4 +37,7 @@ def partition(n):
     return result
 
 
-print(partition(100) - 1)
+n = 1
+while partition(n) % 1000000 != 0:
+    n += 1
+print(n)
