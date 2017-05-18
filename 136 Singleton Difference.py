@@ -1,6 +1,4 @@
-"""https://projecteuler.net/problem=136
-
-I use a similar solution as for problem 135. Currently, this takes too long."""
+"""https://projecteuler.net/problem=136"""
 
 
 def num_solutions1(n):
@@ -21,8 +19,7 @@ def num_solutions1(n):
 
 
 c = 0
-for n in range(1, 50000000):
+for n in range(50_000_000, 0, -1):
     if num_solutions1(n):
         c += 1
-    print(n)
 print("The answer is " + str(c))

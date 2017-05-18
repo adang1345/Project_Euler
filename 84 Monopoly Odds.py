@@ -57,38 +57,132 @@ modal string: 102400.
 
 If, instead of using two 6-sided dice, two 4-sided dice are used, find the six-digit modal string."""
 
-from random import randint
+from random import randint, shuffle
+
+# global variables
+community_chest = ["Advance to GO", "Go to JAIL"] + [""]*14
+chance = ["Advance to GO", "Go to JAIL", "Go to C1", "Go to E3", "Go to H2", "Go to R1", "Go to next R", "Go to next R",
+          "Go to next U", "Go back 3 squares"] + [""]*6
+rolls = []
 
 
 def dice_roll():
     """Return the result from rolling two 6-sided dice as a tuple."""
-    return randint(1, 6), randint(1, 6)
+    return randint(1, 4), randint(1, 4)
 
 
-def final_square(initial_square, current_roll, last_2_rolls):
+def community_chest_draw(start_square):
+    """Draw from Community Chest and return the ending square. Put the drawn card at the bottom of the deck."""
+    global community_chest
+    card = community_chest[0]
+    community_chest = community_chest[1:] + [card]
+    if not card:
+        return start_square
+    elif card == "Advance to GO":
+        return 0
+    elif card == "Go to JAIL":
+        return 10
+    assert False
+
+
+def chance_draw(start_square):
+    """Draw from Chance and return the ending square. Put the drawn card at the bottom of the deck."""
+    global chance
+    card = chance[0]
+    chance = chance[1:] + [card]
+    if not card:
+        return start_square
+    elif card == "Advance to GO":
+        return 0
+    elif card == "Go to JAIL":
+        return 10
+    elif card == "Go to C1":
+        return 11
+    elif card == "Go to E3":
+        return 24
+    elif card == "Go to H2":
+        return 39
+    elif card == "Go to R1":
+        return 5
+    elif card == "Go to next R":
+        if start_square == 7:
+            return 15
+        elif start_square == 22:
+            return 25
+        else: # start_square == 36
+            return 5
+    elif card == "Go to next U":
+        if start_square == 7 or start_square == 36:
+            return 12
+        else: # start_square == 22
+            return 28
+    elif card == "Go back 3 squares":
+        return (start_square-3) % 40
+    raise Exception
+
+
+def final_square(initial_square, current_roll):
     """Return the final square where the player will end up, starting from an initial square and rolling the tuple
     roll_value. We are also given the results of the last 2 rolls. If any of these 2 rolls do not exist, then (7,8) is
     used as a placeholder."""
+    global rolls
 
-    # consider case where three doubles are rolled in a row
-    if current_roll[0] == current_roll[1] and last_2_rolls[0][0] == last_2_rolls[0][1] and \
-        last_2_rolls[1][0] == last_2_rolls[1][1]:
+    # three doubles are rolled in a row
+    if (len(rolls) == 2 and current_roll[0] == current_roll[1] and rolls[0][0] == rolls[0][1]
+        and rolls[1][0] == rolls[1][1]):
+        rolls = []
         return 10  # go to jail
 
     # go to the next square
+    if len(rolls) < 2:
+        rolls.append(current_roll)
+    else:
+        rolls = [rolls[1], current_roll]
     next_square = (initial_square + sum(current_roll)) % 40
 
-    # 
+    # land on community chest
+    if next_square in (2, 17, 33):
+        return community_chest_draw(next_square)
+
+    # land on chance
+    if next_square in (7, 22, 36):
+        return chance_draw(next_square)
+
+    # land on Go to Jail
+    if next_square == 30:
+        return 10
+
+    # nothing special happens
+    return next_square
 
 
+def max_index(l):
+    """Given a non-empty list l of non-negative integers, return the index of the maximum element of l."""
+    v = 0
+    max_i = 0
+    for i in range(len(l)):
+        if l[i] > v:
+            v = l[i]
+            max_i = i
+    return max_i
 
-squares = tuple(range(40))
+# simulate 500 games of 10000 steps each
 square_counts = [0] * 40
-
 init_square = 0
-for _ in range(1000000):
-    next_square = final_square(init_square, dice_roll())
-    square_counts[next_square] += 1
-    init_square = next_square
+for x in range(500):
+    shuffle(community_chest)
+    shuffle(chance)
+    for y in range(10000):
+        next_square = final_square(init_square, dice_roll())
+        square_counts[next_square] += 1
+        init_square = next_square
 
+# determine the modal string
+square_counts2 = square_counts[:]
+a = max_index(square_counts2)
+square_counts2[a] = 0
+b = max_index(square_counts2)
+square_counts2[b] = 0
+c = max_index(square_counts2)
 print(square_counts)
+print(a, b, c)
