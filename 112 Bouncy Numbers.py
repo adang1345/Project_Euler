@@ -8,7 +8,10 @@ numbers is equal to 90%.
 
 Find the least number for which the proportion of bouncy numbers is exactly 99%."""
 
+import functools
 
+
+@functools.lru_cache(maxsize=None)
 def is_bouncy(n):
     """Return True if n is a bouncy number."""
     increasing = True
@@ -44,4 +47,3 @@ while bouncyproportion != 0.99:
     guess = int(round((lower + upper) / 2, -2))
     bouncyproportion = bouncy_proportion(guess)
     print(guess)
-

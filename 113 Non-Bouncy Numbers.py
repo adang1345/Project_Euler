@@ -104,4 +104,3 @@ while n != lower_limit:
     print(len(n))
 
 print(c)
-
