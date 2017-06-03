@@ -4,6 +4,7 @@ The current implementation is too slow."""
 
 import sympy
 import math
+import functools
 
 
 def prod(x):
@@ -46,6 +47,7 @@ def digit_sum(n):
     return s
 
 
+@functools.lru_cache(maxsize=None)
 def digital_root(n):
     """Return the digital root of n."""
     while n >= 10:
@@ -55,7 +57,6 @@ def digital_root(n):
 
 def mdrs(n):
     """Return the maximum digital root sum of n."""
-    multiplicative_partitions = set()
     m = 0
     for f in partition(prime_factorize(n)):
         f = sum(digital_root(prod(x)) for x in f)
@@ -64,8 +65,8 @@ def mdrs(n):
 
 
 s = 0
-for n in range(2, 1000000):
+for n in range(1_000_000, 1, -1):
     s += mdrs(n)
-    # print(n)
+    print(n)
 
 print(s)
