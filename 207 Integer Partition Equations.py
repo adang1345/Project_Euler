@@ -22,8 +22,6 @@ while total == 0 or perfect / total >= limit:
     if k == perfect_k:
         perfect += 1
         m += 1
-    elif k > perfect_k:
-        assert False
     total += 1
     n += 1
 
