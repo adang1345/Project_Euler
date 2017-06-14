@@ -11,33 +11,9 @@ O   O   O   O   O
 
 Find the least value of n for which p(n) is divisible by one million."""
 
-import functools
-
-
-@functools.lru_cache(maxsize=None)
-def partition(n):
-    """Return the number of partitions of n. For large values of n, this function is slow and requires numerous
-    recursive calls. Memoization is recommended to mitigate these issues."""
-    if n == 0:
-        return 1
-    result = 0
-    k = 1
-    sign = 1
-    while True:
-        pent = (3*k**2 - k) // 2
-        if pent > n:
-            break
-        result += sign * partition(n - pent)
-        pent += k
-        if pent > n:
-            break
-        result += sign * partition(n - pent)
-        k += 1
-        sign = -sign
-    return result
-
+from euler import num_partitions
 
 n = 1
-while partition(n) % 1000000 != 0:
+while num_partitions(n) % 1000000 != 0:
     n += 1
 print(n)

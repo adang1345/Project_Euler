@@ -2,6 +2,7 @@
 
 import sympy
 import functools
+from euler import partitions
 
 
 def prod(x):
@@ -10,21 +11,6 @@ def prod(x):
     for n in x:
         p *= n
     return p
-
-
-def partition(collection):
-    """Return the partitions of collection.
-    Algorithm was copied from http://stackoverflow.com/questions/19368375/set-partitions-in-python."""
-    if len(collection) == 1:
-        yield [collection]
-        return
-    first = collection[0]
-    for smaller in partition(collection[1:]):
-        # insert `first` in each of the subpartition's subsets
-        for n, subset in enumerate(smaller):
-            yield smaller[:n] + [[first] + subset] + smaller[n+1:]
-        # put `first` in its own subset
-        yield [[first]] + smaller
 
 
 @functools.lru_cache(maxsize=None)
@@ -36,7 +22,7 @@ def multiplicative_partitions(n):
     for f in factorization:
         for _ in range(factorization[f]):
             factors.append(f)
-    return {tuple(prod(x) for x in y) for y in partition(factors)}
+    return {tuple(prod(x) for x in y) for y in partitions(factors)}
 
 
 def min_prodsum(k):
