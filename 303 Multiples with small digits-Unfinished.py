@@ -18,6 +18,10 @@ def f(n):
 
 c = 0
 for n in range(1, 10001):
-    c += f(n) // n
+    if set(str(n)) == {"9"}:  # if n contains just the digit 9, do something else to improve performance
+        d = len(str(n))
+        c += int("1"*d + "3"*d + "5"*d + "7"*(d-1) + "8")
+    else:
+        c += f(n) // n
     print(n)
 print(c)
