@@ -1,6 +1,7 @@
 """https://projecteuler.net/problem=303
 
-This is too slow."""
+This is too slow. Currently I have an optimization for numbers with just the digit 9, but some still take too long to
+calculate."""
 
 def has_digit_greater_than2(n):
     """Return whether n has a digit greater than 2 in base 10."""
