@@ -1,13 +1,21 @@
-"""https://projecteuler.net/problem=381
-
-Some algebra indicates that S(p) = 8 * (-24)^-1 (mod p)
-"""
-
+"""https://projecteuler.net/problem=549"""
 
 import sympy
-from math import factorial as f
+import time
 
-s = 0
-primes = sympy.primerange(5, 10 ** 8)
-for p in primes:
-    s += (8 * pow(-24, p-2, p)) % p
+
+def s(n):
+    factors = sympy.factorint(n)
+    max_factor = max(factors)
+    return max_factor * factors[max_factor]
+
+
+t = time.time()
+S = 0
+LIMIT = 10 ** 8
+for i in range(LIMIT, 1, -1):
+    S += s(i)
+    if i % 1000 == 0:
+        print(i)
+print(S)
+print(time.time() - t)
