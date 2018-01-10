@@ -52,5 +52,20 @@ def multi_choose(n, k):
     return fact(n) // denom
 
 
+def choose(n, k):
+    """Return n choose k."""
+    return fact(n) // fact(k) // fact(n - k)
+
+
+def sum_digits(n):
+    """Return the sum of the digits in n.
+    Precondition: n is an int >= 0"""
+    s = 0
+    while n:
+        s += n % 10
+        n //= 10
+    return s
+
+
 if __name__ == "__main__":
     print(multi_choose(100, [1]))
