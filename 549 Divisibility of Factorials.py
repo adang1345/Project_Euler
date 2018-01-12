@@ -34,6 +34,5 @@ def kempner(n):
 N = 10 ** 8
 s = 0
 for i in range(2, N + 1):
-    print(i)
     s += kempner(i)
 print(s)
