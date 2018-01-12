@@ -1,10 +1,13 @@
 """Library of common functions needed in Project Euler problems."""
 
-from functools import lru_cache
-from math import factorial as fact
+import functools
+import math
+import sympy
+import os
+import ast
 
 
-@lru_cache(maxsize=None)
+@functools.lru_cache(maxsize=None)
 def num_partitions(n):
     """Return the number of partitions of n."""
     if n == 0:
@@ -48,13 +51,13 @@ def multi_choose(n, k):
     for x in k:
         if x < 0:
             return 0
-        denom *= fact(x)
-    return fact(n) // denom
+        denom *= math.factorial(x)
+    return math.factorial(n) // denom
 
 
 def choose(n, k):
     """Return n choose k."""
-    return fact(n) // fact(k) // fact(n - k)
+    return math.factorial(n) // math.factorial(k) // math.factorial(n - k)
 
 
 def sum_digits(n):
@@ -67,5 +70,68 @@ def sum_digits(n):
     return s
 
 
+def primerange(a, b):
+    """Generate a list of primes in the range [a, b). For efficiency, first check primes.txt, a file containing a list
+    of all primes generated so far. Otherwise, use sympy.primerange and save new primes into primes.txt.
+    Preconditions: primes.txt does not exist, or it is a newline-separated list of primes from 2 onward
+                   a and b are ints"""
+    assert type(a) == type(b) == int, "endpoints must be ints"
+    if not os.path.isfile("primes.txt"):
+        open("primes.txt", "w").close()
+    file = open("primes.txt", "r+")
+    p = 0
+    for p in file:
+        p = int(p[:-1])
+        if p < a:
+            continue
+        if p >= b:
+            file.close()
+            return
+        yield p
+    start = p + 1
+    for p in sympy.primerange(start, b):
+        file.write(str(p))
+        file.write("\n")
+        if p >= a:
+            yield p
+    file.close()
+
+
+def factorrange(a, b):
+    """Generate the prime factorization of ints in the range [a, b). For efficiency, first check factors.txt, a file
+    containing a list of all factorizations computed so far. Otherwise, use sympy.factorint and save new factorizations
+    into factors.txt. A prime factorization is represented as a dictionary with primes as keys and their multiplicities
+    as values.
+    Preconditions: factors.txt does not exist, or it is a newline-separated list of factorizations from 1 onward
+                   a and b are ints
+                   a > 0"""
+    assert type(a) == type(b) == int, "endpoints must be ints"
+    assert a > 0, "a must be > 0"
+    if not os.path.isfile("factors.txt"):
+        open("factors.txt", "w").close()
+    file = open("factors.txt", "r+")
+    n = 1
+    for f in file:
+        if n < a:
+            n += 1
+            continue
+        if n >= b:
+            file.close()
+            return
+        n += 1
+        yield ast.literal_eval(f)
+    for n in range(n, b):
+        f = sympy.factorint(n)
+        file.write(str(f))
+        file.write("\n")
+        if n >= a:
+            yield f
+    file.close()
+
+
 if __name__ == "__main__":
-    print(multi_choose(100, [1]))
+    n = 80_000_000
+    for x in factorrange(80_000_000, 10**8):
+        print(n, end=": ")
+        print(x)
+        n += 1
