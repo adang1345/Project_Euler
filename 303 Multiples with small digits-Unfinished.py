@@ -1,28 +1,47 @@
-"""https://projecteuler.net/problem=303
+"""https://projecteuler.net/problem=303"""
 
-This is too slow. Currently I have an optimization for numbers with just the digit 9, but some still take too long to
-calculate."""
+LIMIT = 10000
 
-def has_digit_greater_than2(n):
-    """Return whether n has a digit greater than 2 in base 10."""
-    if n < 10:
-        return n % 10 > 2
-    return n % 10 > 2 or has_digit_greater_than2(n // 10)
+total = 0
+ns = list(range(1, LIMIT + 1))
+zero_one_two = [1, 2]
 
-
-def f(n):
-    c = n
-    while has_digit_greater_than2(c):
-        c += n
-    return c
-
-
-c = 0
-for n in range(1, 10001):
-    if set(str(n)) == {"9"}:  # if n contains just the digit 9, do something else to improve performance
+# I found through experimentation that if n contains only the digit 9, then f(n)/n can be computed quickly.
+new_ns = []
+for n in ns:
+    digits = set(str(n))
+    if digits == {"9"}:
+        # If n contains just the digit 9, then f(n)/n can be computed quickly. Discovered through experimentation.
         d = len(str(n))
-        c += int("1"*d + "3"*d + "5"*d + "7"*(d-1) + "8")
+        total += int("1"*d + "3"*d + "5"*d + "7"*(d-1) + "8")
+    elif digits <= {"0", "1", "2"}:
+        # If n already contains only digits <= 2, then f(n)/n is 1.
+        total += 1
     else:
-        c += f(n) // n
-    print(n)
-print(c)
+        new_ns.append(n)
+ns = new_ns
+
+while len(ns) > 0:
+    new_ns = []
+    removed = set()
+    new_zero_one_two = []
+
+    for f in zero_one_two:
+        for n in ns:
+            if f % n == 0 and n not in removed:
+                total += f // n
+                removed.add(n)
+
+    for n in ns:
+        if n not in removed:
+            new_ns.append(n)
+    ns = new_ns
+
+    for i in zero_one_two:
+        new_zero_one_two.append(i * 10)
+        new_zero_one_two.append(i * 10 + 1)
+        new_zero_one_two.append(i * 10 + 2)
+    zero_one_two = new_zero_one_two
+    print(len(zero_one_two))
+
+print(total)
